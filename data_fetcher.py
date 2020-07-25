@@ -53,20 +53,19 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
 
     # Convert strings into datetime
     from_timestamp_dt = datetime.strptime(
-        from_timestamp, '%Y-%m-%dT%H:%M:%S')
+        from_timestamp, '%Y-%m-%d %H:%M:%S')
     to_timestamp_dt = datetime.strptime(
-        to_timestamp, '%Y-%m-%dT%H:%M:%S')
+        to_timestamp, '%Y-%m-%d %H:%M:%S')
 
     # Prepare parameters for CH query
     table_name = f'{metric_name}_{interval_dict[interval]}_mv{mode_dict[mode]}'
     datetime_field_name = f'dt_{interval_dict[interval]}'
     timedelta = (to_timestamp_dt-from_timestamp_dt).total_seconds()
     interval = intervals_dict_seconds[interval]
-
     # Request and convert data
     data = ch_client.execute(get_metric_query(
-        datetime_field_name, metric_name, table_name, timedelta, interval), {'from_timestamp': from_timestamp.replace('T', ' '),
-                                                                             'to_timestamp': to_timestamp.replace('T', ' ')})
+        datetime_field_name, metric_name, table_name, timedelta, interval), {'from_timestamp': from_timestamp,
+                                                                             'to_timestamp': to_timestamp})
     if len(data) == 0:
         return '[]'
     df = pd.DataFrame(data, columns=['dt', 'value'])
