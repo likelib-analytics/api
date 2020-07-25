@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime
-from db import get_explorer_query, get_metric_query
+from db import get_explorer_query, get_metric_query, get_address_search_query, get_transaction_search_query, get_block_search_query
 
 
 def get_transactions(ch_client, **kwargs):
@@ -68,19 +68,12 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
     return df.to_json(orient='records')
 
 
-def get_search_address(ch_client, search):
-    data = ch_client.execute(f'''
-    SELECT DISTINCT * FROM
-    (SELECT  from
-    FROM transactions
-    WHERE from LIKE '%{search}%'
+def get_search(ch_client, search, search_type):
+    search_types = {
+        'address': get_address_search_query(search),
+        'transactions': get_transaction_search_query(search),
+        'blocks': get_block_search_query(search)
+    }
+    data = ch_client.execute(search_types[search_type])
 
-    UNION ALL
-
-    SELECT to
-    FROM transactions
-    WHERE to LIKE '%{search}%')
-
-    ''')
-
-    return {'data':[item[0] for item in data]}
+    return {'type': search_type, 'data': [item[0] for item in data]}

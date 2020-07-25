@@ -40,3 +40,37 @@ def get_metric_query(datetime_field_name, metric_name, table_name, timedelta, in
         GROUP BY dt
     '''
     return query
+
+
+def get_address_search_query(search):
+    query = f'''
+    SELECT DISTINCT * FROM
+    (SELECT  from
+    FROM transactions
+    WHERE from LIKE '%{search}%'
+
+    UNION ALL
+    
+    SELECT to
+    FROM transactions
+    WHERE to LIKE '%{search}%')
+    '''
+    return query
+
+
+def get_transaction_search_query(search):
+    query = f'''
+    SELECT DISTINCT transactionHash
+    FROM transactions
+    WHERE transactionHash LIKE '%{search}%'
+    '''
+    return query
+
+
+def get_block_search_query(search):
+    query = f'''
+    SELECT DISTINCT coinbase
+    FROM blocks
+    WHERE coinbase LIKE '%{search}%'
+    '''
+    return query

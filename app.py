@@ -1,10 +1,10 @@
 import flask
-from data_fetcher import get_transactions, get_blocks, get_metric, get_search_address
+from data_fetcher import get_transactions, get_blocks, get_metric, get_search
 from db import ch_client
 
 app = flask.Flask(__name__)
 ch_client = ch_client()
-app.config["DEBUG"] = False
+app.config["DEBUG"] = True
 
 # A route to return all of the available entries in our catalog.
 
@@ -30,8 +30,8 @@ def api_metric():
 
 # Search 
 
-@app.route('/api/v1/_search_address', methods=['GET'])
-def api_search_address():
-    return get_search_address(ch_client, search=flask.request.args.get('search'))
+@app.route('/api/v1/_search', methods=['GET'])
+def api_search():
+    return get_search(ch_client, search=flask.request.args.get('search'), search_type=flask.request.args.get('search_type'))
 
 app.run(host='0.0.0.0', port=8080)
