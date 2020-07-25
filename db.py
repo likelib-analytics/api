@@ -74,3 +74,29 @@ def get_block_search_query(search):
     WHERE coinbase LIKE '%{search}%'
     '''
     return query
+
+
+def get_address_search_detailed_query(search):
+    query = f'''
+    SELECT DISTINCT *
+    FROM transactions
+    WHERE from = '{search}' OR  to = '{search}' '''
+    return query
+
+
+def get_transaction_search_detailed_query(search):
+    query = f'''
+    SELECT DISTINCT *
+    FROM transactions
+    WHERE transactionHash = '{search}'
+    '''
+    return query
+
+
+def get_block_search_detailed_query(search):
+    query = f'''
+    SELECT DISTINCT *
+    FROM blocks
+    WHERE coinbase = '{search}'
+    '''
+    return query
