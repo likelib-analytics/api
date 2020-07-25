@@ -56,7 +56,6 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
     # Prepare parameters for CH query
     table_name = f'{metric_name}_{interval_dict[interval]}_mv{mode_dict[mode]}'
     datetime_field_name = f'dt_{interval_dict[interval]}'
-    metric_name = 'active_addresses'
     timedelta = (to_timestamp_dt-from_timestamp_dt).total_seconds()
     interval = intervals_dict_seconds[interval]
 
