@@ -82,7 +82,7 @@ def get_search(ch_client, search, search_type):
     }
     data = ch_client.execute(search_types[search_type])
     if len(data) == 0:
-        return '[]'
+        return {'type': search_type, 'data': []}
     if search_type == 'blocks':
         max_block = data[0][0]
         data = []
