@@ -1,5 +1,5 @@
 import flask
-from data_fetcher import get_transactions, get_blocks, get_metric
+from data_fetcher import get_transactions, get_blocks, get_metric, get_search_address
 from db import ch_client
 
 app = flask.Flask(__name__)
@@ -28,5 +28,10 @@ def api_metric():
                       metric_name=flask.request.args.get('metric_name'),
                       mode=flask.request.args.get('mode'))
 
+# Search 
+
+@app.route('/api/v1/_search_address', methods=['GET'])
+def api_search_address():
+    return get_search_address(ch_client, search=flask.request.args.get('search'))
 
 app.run(host='0.0.0.0', port=8080)

@@ -66,3 +66,21 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
     df = pd.DataFrame(data, columns=['dt', 'value'])
     df['dt'] = df['dt'].dt.strftime('%Y/%d/%m %H:%M:%S')
     return df.to_json(orient='records')
+
+
+def get_search_address(ch_client, search):
+    data = ch_client.execute(f'''
+    SELECT DISTINCT * FROM
+    (SELECT  from
+    FROM transactions
+    WHERE from LIKE '%{search}%'
+
+    UNION ALL
+
+    SELECT to
+    FROM transactions
+    WHERE to LIKE '%{search}%')
+
+    ''')
+
+    return {'data':[item[0] for item in data]}
