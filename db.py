@@ -29,17 +29,17 @@ def get_metric_query(datetime_field_name, metric_name, table_name, timedelta, in
         FROM {table_name}
         PREWHERE
             dt >= toDateTime(%(from_timestamp)s, 'UTC') AND dt < toDateTime(%(to_timestamp)s, 'UTC')
-        ORDER BY dt
+        
         
         UNION ALL
         
         SELECT
             arrayJoin(
             arrayMap(x -> toDateTime(x), 
-            timeSlots(toDateTime('{'2020-03-01 00:00:00'}'), toUInt32({timedelta}), toUInt32({interval})))) as dt, (0) as value) 
+            timeSlots(toDateTime(%(from_timestamp)s, 'UTC'), toUInt32({timedelta}), toUInt32({interval})))) as dt, (0) as value) 
         GROUP BY dt
+        ORDER BY dt
     '''
-    return query
 
 
 def get_address_search_query(search):
