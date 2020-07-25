@@ -4,7 +4,7 @@ from db import ch_client
 
 app = flask.Flask(__name__)
 ch_client = ch_client()
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 
 # A route to return all of the available entries in our catalog.
 

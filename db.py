@@ -68,10 +68,9 @@ def get_transaction_search_query(search):
 
 
 def get_block_search_query(search):
-    query = f'''
-    SELECT DISTINCT coinbase
+    query = '''
+    SELECT max(depth)
     FROM blocks
-    WHERE coinbase LIKE '%{search}%'
     '''
     return query
 
@@ -97,6 +96,6 @@ def get_block_search_detailed_query(search):
     query = f'''
     SELECT DISTINCT *
     FROM blocks
-    WHERE coinbase = '{search}'
+    WHERE depth = '{search}'
     '''
     return query

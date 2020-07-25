@@ -75,7 +75,13 @@ def get_search(ch_client, search, search_type):
         'blocks': get_block_search_query(search)
     }
     data = ch_client.execute(search_types[search_type])
-
+    if search_type == 'blocks':
+        max_block = data[0][0]
+        data = []
+        for i in range(max_block + 1):
+            if str(search) in str(i):
+                data.append(i)
+        return {'type': search_type, 'data': data}
     return {'type': search_type, 'data': [item[0] for item in data]}
 
 
