@@ -6,6 +6,8 @@ from db import get_explorer_query, get_metric_query, get_address_search_query, g
 def get_transactions(ch_client, **kwargs):
     data = ch_client.execute(get_explorer_query(
         'transactions', kwargs['limit'], kwargs['offset']))
+    if len(data) == 0:
+        return '[]'
     df = pd.DataFrame(data, columns=['from',
                                      'to',
                                      'transactionHash',
@@ -22,6 +24,8 @@ def get_transactions(ch_client, **kwargs):
 def get_blocks(ch_client, **kwargs):
     data = ch_client.execute(get_explorer_query(
         'blocks', kwargs['limit'], kwargs['offset']))
+    if len(data) == 0:
+        return '[]'
     df = pd.DataFrame(data, columns=['coinbase',
                                      'depth',
                                      'nonce',
@@ -63,6 +67,8 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
     data = ch_client.execute(get_metric_query(
         datetime_field_name, metric_name, table_name, timedelta, interval), {'from_timestamp': from_timestamp.replace('T', ' '),
                                                                              'to_timestamp': to_timestamp.replace('T', ' ')})
+    if len(data) == 0:
+        return '[]'
     df = pd.DataFrame(data, columns=['dt', 'value'])
     df['dt'] = df['dt'].dt.strftime('%Y/%d/%m %H:%M:%S')
     return df.to_json(orient='records')
@@ -75,6 +81,8 @@ def get_search(ch_client, search, search_type):
         'blocks': get_block_search_query(search)
     }
     data = ch_client.execute(search_types[search_type])
+    if len(data) == 0:
+        return '[]'
     if search_type == 'blocks':
         max_block = data[0][0]
         data = []
@@ -92,6 +100,8 @@ def get_search_detailed(ch_client, search, search_type):
         'blocks': get_block_search_detailed_query(search)
     }
     data = ch_client.execute(search_types[search_type])
+    if len(data) == 0:
+        return '[]'
     if search_type == 'blocks':
         df = pd.DataFrame(data, columns=['coinbase',
                                          'depth',
