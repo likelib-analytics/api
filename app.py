@@ -1,16 +1,32 @@
 import flask
-from data_fetcher import get_transactions, get_blocks
+from data_fetcher import get_transactions, get_blocks, get_metric
+from db import ch_client
 
 app = flask.Flask(__name__)
+ch_client = ch_client()
 app.config["DEBUG"] = False
 
 # A route to return all of the available entries in our catalog.
+
+
 @app.route('/api/v1/explorer/_transactions', methods=['GET'])
 def api_transactions():
-    return get_transactions(limit=flask.request.args.get('limit'), offset=flask.request.args.get('offset'))
+    return get_transactions(ch_client, limit=flask.request.args.get('limit'), offset=flask.request.args.get('offset'))
+
 
 @app.route('/api/v1/explorer/_blocks', methods=['GET'])
 def api_blocks():
-    return get_blocks(limit=flask.request.args.get('limit'), offset=flask.request.args.get('offset'))
+    return get_blocks(ch_client, limit=flask.request.args.get('limit'), offset=flask.request.args.get('offset'))
+
+
+@app.route('/api/v1/analytics/_metric', methods=['GET'])
+def api_metric():
+    return get_metric(ch_client,
+                      from_timestamp=flask.request.args.get('from_timestamp'),
+                      to_timestamp=flask.request.args.get('to_timestamp'),
+                      interval=flask.request.args.get('interval'),
+                      metric_name=flask.request.args.get('metric_name'),
+                      mode=flask.request.args.get('mode'))
+
 
 app.run(host='0.0.0.0', port=8080)
