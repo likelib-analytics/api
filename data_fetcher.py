@@ -63,7 +63,6 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
     timedelta = (to_timestamp_dt-from_timestamp_dt).total_seconds()
     interval = intervals_dict_seconds[interval]
     # Request and convert data
-    print(get_metric_query(datetime_field_name, metric_name, table_name, timedelta, interval))
     data = ch_client.execute(get_metric_query(
         datetime_field_name, metric_name, table_name, timedelta, interval), {'from_timestamp': from_timestamp,
                                                                              'to_timestamp': to_timestamp})
