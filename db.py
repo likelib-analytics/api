@@ -110,3 +110,12 @@ def get_block_search_detailed_query(search):
     WHERE depth = '{search}'
     '''
     return query
+
+
+def get_block_history_query(search):
+    query = f'''
+    SELECT from, to, amount, transactionHash, type, data, dt
+    FROM transactions
+    WHERE depth = '{search}'
+    '''
+    return query

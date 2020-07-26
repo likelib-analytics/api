@@ -1,6 +1,8 @@
 import pandas as pd
 from datetime import datetime
-from db import get_explorer_query, get_metric_query, get_address_search_query, get_transaction_search_query, get_block_search_query, get_address_search_detailed_query, get_transaction_search_detailed_query, get_block_search_detailed_query, get_address_balance_query
+from db import get_explorer_query, get_metric_query, get_address_search_query, get_transaction_search_query, \
+    get_block_search_query, get_address_search_detailed_query, get_transaction_search_detailed_query, \
+    get_block_search_detailed_query, get_address_balance_query, get_block_history_query
 
 
 def get_transactions(ch_client, **kwargs):
@@ -129,3 +131,18 @@ def get_address_balance(ch_client, address):
     if not data:
         return {'address': address, 'balance': 0}
     return {'address': address, 'balance': data[0][0]}
+
+def get_block_history(ch_client, block):
+    query = get_block_history_query(block)
+    data = ch_client.execute(query)
+    if not data:
+        return {'block': block, 'transactions': []}
+    df = pd.DataFrame(data, columns=['from',
+                                     'to',
+                                     'amount',
+                                     'transactionHash',
+                                     'type',
+                                     'data',
+                                     'dt'])
+    df['dt'] = df['dt'].dt.strftime('%Y/%d/%m %H:%M:%S')
+    return {'block': block, 'transactions': df.to_dict('records')}
