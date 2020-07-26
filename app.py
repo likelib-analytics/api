@@ -1,5 +1,5 @@
 import flask
-from data_fetcher import get_transactions, get_blocks, get_metric, get_search, get_search_detailed
+from data_fetcher import get_transactions, get_blocks, get_metric, get_search, get_search_detailed, get_address_balance
 from db import ch_client
 
 app = flask.Flask(__name__)
@@ -37,6 +37,11 @@ def api_search():
 @app.route('/api/v1/_search_detailed', methods=['GET'])
 def api_search_detailed():
     return get_search_detailed(ch_client, search=flask.request.args.get('search'), search_type=flask.request.args.get('search_type'))
+
+
+@app.route('/api/v1/_balance', methods=['GET'])
+def api_address_balance():
+    return get_address_balance(ch_client, address=flask.request.args.get('address'))
 
 
 app.run(host='0.0.0.0', port=8080)
