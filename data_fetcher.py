@@ -130,7 +130,7 @@ def get_address_balance(ch_client, address):
     data = ch_client.execute(query)
     if not data:
         return {'address': address, 'balance': 0}
-    return {'address': address, 'balance': data[0][0]}
+    return {'address': address, 'balance': max(data[0][0], 0)}
 
 def get_block_history(ch_client, block):
     query = get_block_history_query(block)

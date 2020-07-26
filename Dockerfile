@@ -19,4 +19,4 @@ COPY . /app
 EXPOSE 8080
 ENV PYTHONPATH /app
 
-CMD ["python3", "-u", "app.py"]
+CMD ["gunicorn", "-w", "2", "-b", ":8080", "app:app"]
