@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime
-from db import get_explorer_query, get_metric_query, get_address_search_query, get_transaction_search_query, get_block_search_query, get_address_search_detailed_query, get_transaction_search_detailed_query, get_block_search_detailed_query
+from db import get_explorer_query, get_metric_query, get_address_search_query, get_transaction_search_query, get_block_search_query, get_address_search_detailed_query, get_transaction_search_detailed_query, get_block_search_detailed_query, get_address_balance_query
 
 
 def get_transactions(ch_client, **kwargs):
@@ -121,3 +121,11 @@ def get_search_detailed(ch_client, search, search_type):
                                          'depth'])
     df['dt'] = df['dt'].dt.strftime('%Y/%d/%m %H:%M:%S')
     return df.to_json(orient='records')
+
+
+def get_address_balance(ch_client, address):
+    query = get_address_balance_query(address)
+    data = ch_client.execute(query)
+    if not data:
+        return {'address': address, 'balance': 0}
+    return {'address': address, 'balance': data[0][0]}

@@ -84,6 +84,16 @@ def get_address_search_detailed_query(search):
     return query
 
 
+def get_address_balance_query(search):
+    query = f'''
+    select runningAccumulate(balance)
+    from balance_state_block_mv
+    where address = '{search}'
+    ORDER BY dt_block desc
+    LIMIT 1'''
+    return query
+
+
 def get_transaction_search_detailed_query(search):
     query = f'''
     SELECT DISTINCT *
