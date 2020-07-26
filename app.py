@@ -49,5 +49,5 @@ def api_address_balance():
 def api_block_history():
     return get_block_history(ch_client, block=flask.request.args.get('block'))
 
-
-app.run(host='0.0.0.0', port=8080)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)

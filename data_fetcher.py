@@ -76,6 +76,7 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
 
 
 def get_search(ch_client, search, search_type):
+    print(search)
     search_types = {
         'address': get_address_search_query(search),
         'transactions': get_transaction_search_query(search),
@@ -130,7 +131,7 @@ def get_address_balance(ch_client, address):
     data = ch_client.execute(query)
     if not data:
         return {'address': address, 'balance': 0}
-    return {'address': address, 'balance': data[0][0]}
+    return {'address': address, 'balance': max(data[0][0], 0)}
 
 def get_block_history(ch_client, block):
     query = get_block_history_query(block)

@@ -80,7 +80,9 @@ def get_address_search_detailed_query(search):
     query = f'''
     SELECT DISTINCT *
     FROM transactions
-    WHERE from = '{search}' OR  to = '{search}' '''
+    WHERE from = '{search}' OR  to = '{search}' 
+    ORDER BY depth DESC
+    '''
     return query
 
 
