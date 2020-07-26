@@ -76,7 +76,6 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
 
 
 def get_search(ch_client, search, search_type):
-    print(search)
     search_types = {
         'address': get_address_search_query(search),
         'transactions': get_transaction_search_query(search),
