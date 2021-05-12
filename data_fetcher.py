@@ -6,8 +6,9 @@ from db import get_explorer_query, get_metric_query, get_address_search_query, g
 
 
 def get_transactions(ch_client, **kwargs):
-    data = ch_client.execute(get_explorer_query(
-        'transactions', kwargs['limit'], kwargs['offset']))
+    data = ch_client.execute(
+        get_explorer_query(kwargs['limit'], kwargs['offset']),
+        {"table_name": 'transactions', "limit": kwargs['limit'], "offset": kwargs['offset']})
     if len(data) == 0:
         return '[]'
     df = pd.DataFrame(data, columns=['from',
@@ -24,8 +25,9 @@ def get_transactions(ch_client, **kwargs):
 
 
 def get_blocks(ch_client, **kwargs):
-    data = ch_client.execute(get_explorer_query(
-        'blocks', kwargs['limit'], kwargs['offset']))
+    data = ch_client.execute(
+        get_explorer_query(kwargs['limit'], kwargs['offset']),
+        {"table_name": "blocks", "limit": kwargs['limit'], "offset": kwargs['offset']})
     if len(data) == 0:
         return '[]'
     df = pd.DataFrame(data, columns=['coinbase',
@@ -65,9 +67,10 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
     timedelta = (to_timestamp_dt-from_timestamp_dt).total_seconds()
     interval = intervals_dict_seconds[interval]
     # Request and convert data
-    data = ch_client.execute(get_metric_query(
-        datetime_field_name, metric_name, table_name, timedelta, interval), {'from_timestamp': from_timestamp,
-                                                                             'to_timestamp': to_timestamp})
+    data = ch_client.execute(
+        get_metric_query(),
+        {'from_timestamp': from_timestamp, 'to_timestamp': to_timestamp, "datetime_field_name": datetime_field_name,
+         "metric_name": metric_name, "table_name": table_name, "timedelta": timedelta, "interval": interval})
     if len(data) == 0:
         return '[]'
     df = pd.DataFrame(data, columns=['dt', 'value'])
@@ -77,11 +80,11 @@ def get_metric(ch_client, from_timestamp, to_timestamp, interval, metric_name, m
 
 def get_search(ch_client, search, search_type):
     search_types = {
-        'address': get_address_search_query(search),
-        'transactions': get_transaction_search_query(search),
-        'blocks': get_block_search_query(search)
+        'address': get_address_search_query(),
+        'transactions': get_transaction_search_query(),
+        'blocks': get_block_search_query()
     }
-    data = ch_client.execute(search_types[search_type])
+    data = ch_client.execute(search_types[search_type], {"search": f"%{search.replace("%", "\%")}%"})
     if len(data) == 0:
         return {'type': search_type, 'data': []}
     if search_type == 'blocks':
@@ -96,11 +99,11 @@ def get_search(ch_client, search, search_type):
 
 def get_search_detailed(ch_client, search, search_type):
     search_types = {
-        'address': get_address_search_detailed_query(search),
-        'transactions': get_transaction_search_detailed_query(search),
-        'blocks': get_block_search_detailed_query(search)
+        'address': get_address_search_detailed_query(),
+        'transactions': get_transaction_search_detailed_query(),
+        'blocks': get_block_search_detailed_query()
     }
-    data = ch_client.execute(search_types[search_type])
+    data = ch_client.execute(search_types[search_type], {"search": search})
     if len(data) == 0:
         return '[]'
     if search_type == 'blocks':
@@ -127,14 +130,14 @@ def get_search_detailed(ch_client, search, search_type):
 
 def get_address_balance(ch_client, address):
     query = get_address_balance_query(address)
-    data = ch_client.execute(query)
+    data = ch_client.execute(query, {"address": address})
     if not data:
         return {'address': address, 'balance': 0}
     return {'address': address, 'balance': max(data[0][0], 0)}
 
 def get_block_history(ch_client, block):
     query = get_block_history_query(block)
-    data = ch_client.execute(query)
+    data = ch_client.execute(query, {"block": block})
     if not data:
         return {'block': block, 'transactions': []}
     df = pd.DataFrame(data, columns=['from',
